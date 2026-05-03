@@ -1,5 +1,5 @@
-// #import "@preview/bookly:3.1.1": *
-#import "../../src/bookly.typ": *
+// #import "../../src/bookily.typ": *
+#import "../../src/bookily.typ": *
 
 // #show: chapter.with(title: "Second chapter")
 
@@ -25,4 +25,4 @@ $
 
 #lorem(500)#note(lorem(10))
 
-#fullwidth(lorem(500))
+#wideblock(side: "both", lorem(500))

@@ -1,12 +1,12 @@
-// #import "@preview/bookly:3.1.1": *
-#import "../src/bookly.typ": *
+// #import "../../src/bookily.typ": *
+#import "../src/bookily.typ": *
 
 #let config-colors = (
   primary: rgb("#1d90d0"),
   secondary: rgb("#dddddd").darken(15%)
 )
 
-#show: bookly.with(
+#show: bookily.with(
   author: "Author Name",
   fonts: (
     body: "Lato",

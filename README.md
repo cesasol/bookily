@@ -1,124 +1,116 @@
-# Book template
+# Bookily
 
-[![Generic badge](https://img.shields.io/badge/Version-3.1.1-cornflowerblue.svg)](https://github.com/maucejo/bookly/releases/tag/3.1.1)
-[![MIT License](https://img.shields.io/badge/License-MIT-forestgreen)](https://github.com/maucejo/book_template/blob/main/LICENSE)
-[![User Manual](https://img.shields.io/badge/doc-.pdf-mediumpurple)](https://github.com/maucejo/bookly/blob/main/docs/manual.pdf)
+[![MIT License](https://img.shields.io/badge/License-MIT-forestgreen)](./LICENSE)
+[![User Manual](https://img.shields.io/badge/doc-.pdf-mediumpurple)](./docs/manual.pdf)
 
+`bookily` is a [Typst](https://typst.app) template for **traditional book publishing** — novels, essays, manuals, non-fiction, and similar long-form prose work.
 
-The `bookly` template is a Typst package designed for writing academic documents such as theses, French habilitations, or scientific books. It provides a structured format that adheres to academic standards, making it easier for authors to focus on content rather than formatting.
+It is a fork of the excellent [`bookly`](https://github.com/maucejo/bookly) template by **Mathieu Aucejo**, with a deliberately narrower scope: the upstream project targets academic writing (theses, French habilitations, scientific monographs), while this fork strips away the academic apparatus to focus on the typesetting needs of regular books.
+
+## Why a fork?
+
+The upstream `bookly` is a great template, but it carries a lot of machinery that book authors do not need:
+
+- thesis title pages and committee formalities
+- heavy mathematical typesetting affordances tuned for journal articles
+- academic outline conventions surfaced by default
+- proof / theorem-style information boxes
+
+`bookily` is the same engine pointed at a different reader: someone preparing a book for **print or e-book distribution**, not a journal or a defense committee. The goal is to make the common path — title page → front matter → chapters → back matter → cover — clean, opinionated, and pleasant.
+
+The fork keeps a few things that are *not* exclusively academic:
+
+- A first-class **cover-hierarchy** (`title`, `subtitle`, `subsubtitle`, `subsubsubtitle`, `epigraph`) that flows straight into the title page.
+- The **Tufte layout** is kept on purpose. It's the natural fit for commentary editions, annotated translations of historical works, and other margin-driven scholarly publishing.
+
+> **Status:** This fork is young. Expect the trade-publishing surface to keep growing and the academic-leaning defaults to keep softening. Existing upstream documents should keep compiling.
+
+## Acknowledgements
+
+This project would not exist without:
+
+- **[Mathieu Aucejo](https://github.com/maucejo)** — author of the original [`bookly`](https://github.com/maucejo/bookly) template. The architecture, themes, and the bulk of the typesetting work are his. All credit for the foundation belongs upstream; any rough edges in this fork are mine.
+- The Typst community and the package maintainers listed under [Dependencies](#dependencies).
+
+If you are writing a thesis, a habilitation, or a math-heavy scientific monograph, you almost certainly want **upstream `bookly`**, not this fork.
 
 ## Basic usage
 
-This section provides the minimal amount of information to get started with the template. For more detailed information, see the [manual](https://github.com/maucejo/bookly/blob/main/docs/manual.pdf).
+This fork is currently consumed locally rather than via the Typst package registry. Clone the repo and point your document at the entrypoint, or copy the `template/` folder as a starting point:
 
-To use the `bookly` template, you need to include the following line at the beginning of your typ file:
-
-```typ
-#import "@preview/bookly:3.1.1": *
+```sh
+git clone https://github.com/cesasol/bookily.git
+cp -r bookily/template my-book
 ```
 
-After importing `bookly`, you have to initialize the template by a show rule with the `#bookly()` command.
+Then in your `.typ` file:
 
-**Example**
 ```typ
-#show: bookly.with(
-  title: "My document",
+#import "path/to/bookily/src/bookily.typ": *
+
+#show: bookily.with(
+  title: [A long and beautiful title],
+  subtitle: [Introduction to writing great subtitles],
+  subsubtitle: [A redundant and sometimes necessary subtitle],
+  subsubsubtitle: [A third tag-line, used sparingly],
+  epigraph: quote(attribution: [Jonathan Bingus])[
+    A tremendously inspirational quote that sets the tone of the book.
+  ],
   author: "Author Name",
   theme: modern,
   lang: "en",
-  tufte: false,
-  fonts: (
-    body: "Lato",
-    math: "Lete Sans Math"
-  ),
+  fonts: (body: "Lato"),
   title-page: book-title-page(
-    series: "Typst book series",
-    institution: "Typst community",
-    logo: image("images/typst-logo.svg"),
-    cover: image("images/book-cover.jpg", width: 45%)
+    series: "An Imprint",
+    cover: image("images/book-cover.jpg", width: 45%),
   ),
-  config-options: (
-    open-right: true,
-    alt-margins: false
-  )
+  config-options: (open-right: true),
 )
 ```
 
-## Main features
+A complete, runnable example lives in [`template/main.typ`](./template/main.typ). For the full reference, see the [manual](./docs/manual.pdf).
 
-* Themes: `classic`, `modern`, `fancy`, `obook`, `orly`, `pretty`
-* Tufte layout powered by `marginalia` package
-* Language support: English, Chinese, French, German, Italian, Portuguese, Spanish
-* Font customization: Body, math and raw fonts can be customized
-* Environments: `front-matter`, `main-matter`, `appendix`, `back-matter`
-* Outlines: `tableofcontents`, `listoffigures`, `listoftables`, `minitoc`
-* Part and chapter definition: `part`, `chapter`, `chapter-nonum`
+## Features
 
-> **_Note:_**  The chapters can be also written using the Typst standard markup syntax.
+Built for prose-first publishing:
 
-## Helper functions
+- **Cover hierarchy:** `title`, `subtitle`, `subsubtitle`, `subsubsubtitle`, `epigraph` — drop them straight into the show-rule and the cover lays itself out.
+- **Themes:** `classic`, `modern`, `fancy`, `obook`, `orly`, `pretty`.
+- **Two layouts:** standard prose layout, and a Tufte-style layout for commentary editions, annotated historical works, and other margin-driven publishing — toggled with `tufte: true`.
+- **Languages:** English, Chinese, French, German, Italian, Portuguese, Spanish.
+- **Fonts:** body / math / raw fonts each customizable.
+- **Structure:** `front-matter`, `main-matter`, `appendix`, `back-matter`.
+- **Headings:** `part`, `chapter`, `chapter-nonum` (plus standard Typst markup).
+- **Title pages and back cover:** `book-title-page`, `back-cover`.
+- **Subfigures** via `subpar`.
+- **Information callouts:** `info-box`, `tip-box`, `important-box`, `custom-box`.
 
-* Subfigures - based on the `subpar` package
-    ```typ
-    #subfigure(
-        figure(image("image1.png"), caption: []),
-        figure(image("image2.png"), caption: []), <b>,
-        columns: (1fr, 1fr),
-        caption: [Figure title],
-        label: <fig:subfig>,
-    )
-    ```
+Inherited from upstream and kept for now (less central to trade publishing, but harmless if unused):
 
-* Equations
-    * Boxed equations
-        ```typ
-        $
-            #boxeq[$p(A|B) prop p(B|A) space p(A)$]
-        $
-        ```
-
-    * Unnumbered equations
-        ```typ
-        #nonumeq[$integral_0^1 f(x) dif x = F(1) - F(0)$]
-        ```
-
-    * Subequation numbering based on the `equate` package
-
-* Information boxes
-    * `#info-box` for remarks
-    * `#tip-box` for tips
-    * `#important-box` for important notes
-    * `proof-box` for proofs
-    * `question-box` for questions
-    * `custom-box` for user defined boxes
-
-* `book-title-page` for defining the title page of a book
-
-* `thesis-title-page` for defining the title page of a thesis
-
-* `back-cover` for defining the back cover of a book
+- Lists of figures / tables, per-chapter mini-TOCs.
+- Math helpers: `boxeq`, `nonumeq`, sub-equation numbering.
+- `proof-box`, `question-box`.
+- `thesis-title-page`.
 
 ## Dependencies
 
-`bookly` relies on the following packages:
+`bookily` builds on the same Typst packages as upstream `bookly`:
 
-* `marginalia:0.3.1`: for tufte layout.
+| Package        | Version | Purpose                              |
+| -------------- | ------- | ------------------------------------ |
+| `marginalia`   | 0.3.1   | Tufte / commentary-edition margins   |
+| `hydra`        | 0.6.2   | Running headers / bibliography aids  |
+| `equate`       | 0.3.2   | Equation numbering                   |
+| `itemize`      | 0.2.0   | List customization                   |
+| `showybox`     | 2.0.4   | Information boxes                    |
+| `suboutline`   | 0.3.0   | Mini tables of contents              |
+| `subpar`       | 0.2.2   | Subfigures                           |
 
-* `hydra:0.6.2` : for bibliography management.
+## License
 
-* `equate:0.3.2` : for advanced equation numbering.
+MIT — see [`LICENSE`](./LICENSE).
 
-* `itemize:0.2.0"`: for lists and enumerations customization.
+- Original work © 2026 **Mathieu Aucejo** ([`maucejo/bookly`](https://github.com/maucejo/bookly))
+- Fork modifications © 2026 **cesasol**
 
-* `showybox:2.0.4` : for custom boxes.
-
-* `suboutline:0.3.0` : for mini tables of contents in chapters.
-
-* `subpar:0.2.2` : for subfigures.
-
-## Licence
-
-MIT licensed
-
-Copyright © 2026 Mathieu AUCEJO (maucejo)
-
+The MIT license of the original project is preserved in this fork.

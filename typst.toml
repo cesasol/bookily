@@ -1,12 +1,12 @@
 [package]
-name = "bookly"
-version = "3.1.1"
-authors = ["Mathieu Aucejo"]
+name = "bookily"
+version = "0.1.0"
+authors = ["cesasol", "Mathieu Aucejo"]
 license = "MIT"
-description = "Book template for Typst"
-entrypoint = "src/bookly.typ"
+description = "Typst template for traditional book publishing (fork of bookly)"
+entrypoint = "src/bookily.typ"
 categories = ["book", "model"]
-repository = "https://github.com/maucejo/bookly"
+repository = "https://github.com/cesasol/bookily"
 exclude = ["docs/manual.pdf"]
 
 [template]

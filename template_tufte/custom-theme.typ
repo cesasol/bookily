@@ -1,6 +1,4 @@
-
-#import "@preview/bookly:3.1.1": *
-// #import "@preview/bookly:3.1.1": *
+#import "../src/bookily.typ": *
 
 #let custom(colors: default-colors, it) = {
   states.theme.update("custom")
@@ -70,7 +68,7 @@
 
   // Page style
   let page-header = context {
-    show: fullwidth
+    show: wideblock.with(side: "both")
     if calc.odd(here().page()) {
       align(left, hydra(2, display: (_, it) => [
       #let head = none

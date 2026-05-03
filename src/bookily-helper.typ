@@ -1,7 +1,7 @@
 
 #import "@preview/subpar:0.2.2"
 #import "@preview/suboutline:0.3.0": *
-#import "bookly-defaults.typ": *
+#import "bookily-defaults.typ": *
 
 // Reset counters
 #let reset-counters = context {
@@ -58,24 +58,40 @@ set align(center)
 #let ls-caption(long, short) = context if states.in-outline.get() { short } else { long }
 
 // Book title page
+//
+// Most "title" content (title, subtitle, subsubtitle, subsubsubtitle, epigraph,
+// author) flows in from the top-level `bookily()` call via states. The
+// arguments below override those states when explicitly provided, which keeps
+// pre-existing call sites working.
 #let book-title-page(
-  subtitle: "Book subtitle",
+  subtitle: none,
+  subsubtitle: none,
+  subsubsubtitle: none,
+  epigraph: none,
   edition: "First edition",
   institution: "Institution",
   series: "Discipline",
   year: datetime.today().year(),
   cover: none,
-  logo: none
+  logo: none,
 ) = context {
+  let primary = states.colors.get().primary
+
+  // Resolve content: argument wins, otherwise fall back to the state set by `bookily()`.
+  let resolved-subtitle = if subtitle != none { subtitle } else { states.subtitle.get() }
+  let resolved-subsubtitle = if subsubtitle != none { subsubtitle } else { states.subsubtitle.get() }
+  let resolved-subsubsubtitle = if subsubsubtitle != none { subsubsubtitle } else { states.subsubsubtitle.get() }
+  let resolved-epigraph = if epigraph != none { epigraph } else { states.epigraph.get() }
+
   let header = {
-    box(fill: states.colors.get().primary, width: 100%, inset: 1em)[
+    box(fill: primary, width: 100%, inset: 1em)[
       #set align(center + horizon)
       #text(fill: white, size: 1.5em)[#strong(delta: 400)[#series]]
     ]
   }
 
   let footer = {
-    box(fill: states.colors.get().primary, width: 100%, inset: 1em)[
+    box(fill: primary, width: 100%, inset: 1em)[
       #set align(center + horizon)
       #text(fill: white, size: 1.5em)[#strong(delta: 400)[#institution]]
     ]
@@ -85,26 +101,39 @@ set align(center)
     paper: paper-size,
     header: header,
     footer: footer,
-    margin: (left: 0em, right:0em, top: 4em, bottom: 4em)
+    margin: (left: 0em, right: 0em, top: 4em, bottom: 4em),
   )
 
   let title-page = context {
+    let title = states.title.get()
+    let author = states.author.get()
 
     align(horizon)[
       #move(dx: 2em)[
-        #line(stroke: 1.5pt + states.colors.get().primary, length: 90%)
+        #line(stroke: 1.5pt + primary, length: 90%)
         #v(1em)
       ]
 
       #move(dx: 4em)[
-        #text(size: 3em)[*#states.title.get()*]
+        #text(size: 3em)[*#smallcaps(title)*]
         #linebreak()
 
-        #if subtitle != none {
+        #if resolved-subtitle != none {
           v(0.5em)
-          text(size: 1.75em)[#subtitle]
+          text(size: 1.75em)[#smallcaps(resolved-subtitle)]
           linebreak()
-          v(0.5em)
+        }
+
+        #if resolved-subsubtitle != none {
+          v(0.4em)
+          text(size: 1.25em, style: "italic")[#resolved-subsubtitle]
+          linebreak()
+        }
+
+        #if resolved-subsubsubtitle != none {
+          v(0.3em)
+          text(size: 1em, style: "italic")[#resolved-subsubsubtitle]
+          linebreak()
         }
 
         #if edition != none {
@@ -115,12 +144,12 @@ set align(center)
         }
 
         #v(0.5em)
-        #text(size: 1.5em)[#states.author.get()]
+        #text(size: 1.5em)[#smallcaps(author)]
       ]
 
       #move(dx: 2em)[
         #v(1em)
-        #line(stroke: 1.5pt + states.colors.get().primary, length: 90%)
+        #line(stroke: 1.5pt + primary, length: 90%)
       ]
 
       #if cover != none {
@@ -133,30 +162,61 @@ set align(center)
       paper: paper-size,
       header: none,
       footer: none,
-      margin: auto
+      margin: auto,
     )
 
     if states.open-right.get() {
       pagebreak(to: "odd")
     }
 
-    align(center + horizon)[
-      #text(size: 3em)[*#states.title.get()*]
+    // Inner cover
+    set align(center)
+    v(1fr)
 
-      #if subtitle != none {
-          v(-1.5em)
-          text(size: 1.75em)[#subtitle]
-          linebreak()
-          v(0.5em)
-        }
+    text(size: 3em)[*#smallcaps(title)*]
 
-        #if edition != none {
-          v(0.5em)
-          text(size: 1.25em)[_ #edition _]
-          linebreak()
-          v(0.5em)
-        }
-    ]
+    if resolved-subtitle != none {
+      v(0.5em)
+      text(size: 1.75em)[#smallcaps(resolved-subtitle)]
+    }
+
+    if resolved-subsubtitle != none {
+      v(0.6em)
+      text(size: 1.25em, style: "italic")[#resolved-subsubtitle]
+    }
+
+    if resolved-subsubsubtitle != none {
+      v(0.3em)
+      text(size: 1em, style: "italic")[#resolved-subsubsubtitle]
+    }
+
+    if edition != none {
+      v(0.8em)
+      text(size: 1.25em)[_ #edition _]
+    }
+
+    v(2fr)
+
+    // Epigraph block, framed by horizontal rules.
+    // `set quote(block: true)` ensures `#quote(attribution: ...)` renders the
+    // attribution line, which Typst hides in inline mode.
+    if resolved-epigraph != none {
+      block(width: 70%)[
+        #set align(left)
+        #set quote(block: true)
+        #line(length: 100%, stroke: 0.5pt)
+        #v(0.5em)
+        #text(size: 1em, style: "italic")[#resolved-epigraph]
+        #v(0.5em)
+        #line(length: 100%, stroke: 0.5pt)
+      ]
+    }
+
+    v(2fr)
+
+    text(size: 1.25em)[#smallcaps(states.author.get())]
+
+    v(1fr)
 
     if logo != none {
       set image(width: 35%)

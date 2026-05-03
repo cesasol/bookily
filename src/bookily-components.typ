@@ -1,7 +1,7 @@
 #import "@preview/hydra:0.6.2": hydra
-#import "bookly-defaults.typ": *
-#import "bookly-helper.typ": *
-#import "bookly-themes.typ": *
+#import "bookily-defaults.typ": *
+#import "bookily-helper.typ": *
+#import "bookily-themes.typ": *
 
 // Chapter
 #let chapter(title: none, abstract: none, toc: true, numbered: true, label: none, body) = context {

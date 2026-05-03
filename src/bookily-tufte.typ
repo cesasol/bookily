@@ -1,6 +1,6 @@
 #import "@preview/marginalia:0.3.1" as marginalia: note, notefigure, wideblock
-#import "bookly-defaults.typ": *
-#import "bookly-helper.typ": *
+#import "bookily-defaults.typ": *
+#import "bookily-helper.typ": *
 
 #let tufte-content(body) = block(width: 5cm, body)
 #let margin-factor = 1.4

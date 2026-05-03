@@ -1,5 +1,5 @@
 #import "@preview/marginalia:0.3.1" as marginalia: wideblock
-#import "bookly-helper.typ": *
+#import "bookily-helper.typ": *
 
 // Table of contents
 #let tableofcontents = {

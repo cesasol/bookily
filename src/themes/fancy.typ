@@ -2,8 +2,8 @@
 #import "@preview/marginalia:0.3.1" as marginalia: wideblock
 #import "@preview/showybox:2.0.4": *
 #import "@preview/itemize:0.2.0" as el
-#import "../bookly-helper.typ": *
-#import "../bookly-defaults.typ": *
+#import "../bookily-helper.typ": *
+#import "../bookily-defaults.typ": *
 
 #let fancy(colors: default-colors, it) = {
   states.theme.update("fancy")

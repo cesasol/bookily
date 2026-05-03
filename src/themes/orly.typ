@@ -1,8 +1,8 @@
 #import "@preview/showybox:2.0.4": *
 #import "@preview/hydra:0.6.2": hydra, anchor
 #import "@preview/marginalia:0.3.1" as marginalia: wideblock
-#import "../bookly-helper.typ": *
-#import "../bookly-defaults.typ": *
+#import "../bookily-helper.typ": *
+#import "../bookily-defaults.typ": *
 
 #let orly(colors: default-colors, it) = {
   states.theme.update("orly")
@@ -32,13 +32,13 @@
         #v(-0.75em)
         #line(length: 100%, stroke: 0.5pt)
         #v(-0.1em)
-        #text(2em)[#it.body]
+        #text(2em, hyphenate: false)[#it.body]
       ]
     } else {
       [
         #line(length: 100%, stroke: 0.5pt)
         #v(-0.1em)
-        #text(2em)[#it.body]
+        #text(2em, hyphenate: false)[#it.body]
       ]
     }
     v(5em)

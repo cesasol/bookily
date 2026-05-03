@@ -2,7 +2,7 @@
 #import "@preview/showybox:2.0.4": *
 #import "@preview/swank-tex:0.1.0": LaTeX
 #import "@preview/cheq:0.2.2": *
-#import "../src/bookly.typ": *
+#import "../src/bookily.typ": *
 
 #show: checklist.with(fill: eastern.lighten(95%), stroke: eastern, radius: .2em)
 
@@ -12,13 +12,13 @@
 #let abstract = [This Typst package is a proposed template for writing thesis dissertations, French habilitations, or scientific books.]
 
 #show: mantys(
-  name: "bookly.typ",
-  version: "3.1.1",
-  authors: ("Mathieu Aucejo",),
+  name: "bookily.typ",
+  version: "0.1.0",
+  authors: ("cesasol", "Mathieu Aucejo"),
 
   license: "MIT",
-  description: "Write beautiful scientific book or thesis with Typst",
-  repository: "https://github.com/maucejo/bookly",
+  description: "Typst template for traditional book publishing (fork of bookily)",
+  repository: "https://github.com/cesasol/bookily",
 
   title: "Book Template",
   date: datetime.today(),
@@ -30,16 +30,16 @@
 
 = Usage
 
-== Using `bookly`
+== Using `bookily`
 
-To use the #package[bookly] template, you need to include the following line at the beginning of your `typ` file:
+To use the #package[bookily] template, you need to include the following line at the beginning of your `typ` file:
 #codesnippet[```typ
-#import "@preview/bookly:3.1.1": *
+#import "@preview/bookily:0.1.0": *
 ```
 ]
 
 #warning-alert[
-In `bookly`, the supplement of the `ref` function is set to "none" by default to avoid unexpected behavior when referencing more than one item. However, you can revert this setting by using the following syntax after the template definition:
+In `bookily`, the supplement of the `ref` function is set to "none" by default to avoid unexpected behavior when referencing more than one item. However, you can revert this setting by using the following syntax after the template definition:
 #codesnippet[
   ```typ
   #set ref(supplement: auto)
@@ -48,17 +48,21 @@ In `bookly`, the supplement of the `ref` function is set to "none" by default to
 
 == Initializing the template
 
-After importing #package[bookly], you have to initialize the template by a show rule with the #cmd[bookly] command. This function takes an optional argument to specify the title of the document.
+After importing #package[bookily], you have to initialize the template by a show rule with the #cmd[bookily] command. This function takes an optional argument to specify the title of the document.
 #codesnippet[```typ
-#show: bookly.with(
+#show: bookily.with(
   ...
 )
 ```
 ]
 
-#command("bookly", ..args(
+#command("bookily", ..args(
 	title: "Title",
-  author: "Author Name",
+	subtitle: none,
+	subsubtitle: none,
+	subsubsubtitle: none,
+	epigraph: none,
+	author: "Author Name",
 	theme: "fancy",
 	tufte: false,
 	lang: "fr",
@@ -67,7 +71,22 @@ After importing #package[bookly], you have to initialize the template by a show 
 	title-page: none,
 	config-options: "default-config-options",
 	[body]))[
-		#argument("title", default: "Title", types: "string")[Title of the book or the thesis.]
+		#argument("title", default: "Title", types: ("string", "content"))[Title of the book. Rendered prominently on the cover.]
+
+		#argument("subtitle", default: none, types: ("string", "content"))[Optional subtitle. Rendered below the title in small caps.]
+
+		#argument("subsubtitle", default: none, types: ("string", "content"))[Optional second-level subtitle. Rendered below the subtitle in italics. Useful when one subtitle isn't enough.]
+
+		#argument("subsubsubtitle", default: none, types: ("string", "content"))[Optional third-level subtitle. Rendered in a smaller italic. Supports forced linebreaks (`\`) for multi-line tag-lines.]
+
+		#argument("epigraph", default: none, types: "content")[Optional epigraph rendered between two horizontal rules near the bottom of the cover. Pass a `quote(...)` for proper attribution rendering, e.g.
+
+		```typ
+		epigraph: quote(attribution: [Jonathan Bingus])[
+		  This is a tremendously inspirational quote.
+		]
+		```
+		]
 
 		#argument("author", default: "Author Name", types: "string")[Author of the book.]
 
@@ -75,11 +94,12 @@ After importing #package[bookly], you have to initialize the template by a show 
 			- `fancy` (default)
 			- `modern`
 			- `classic`
+			- `obook`
 			- `orly` (O'Reilly inspired)
 			- `pretty`
 		]
 
-		#argument("tufte", default: false, types: "bool")[If `true`, the layout of the document is inspired by the works of Edward Tufte (wide margins, sidenotes, etc.).
+		#argument("tufte", default: false, types: "bool")[If `true`, the layout of the document is inspired by the works of Edward Tufte (wide margins, sidenotes, etc.). Useful for commentary editions of historical works and other annotation-heavy publications.
 		]
 
 		#argument("lang", default: "en", types: "string")[Language of the document.
@@ -119,7 +139,7 @@ After importing #package[bookly], you have to initialize the template by a show 
 === Initialization example
 #codesnippet[
 ```typ
-#show: bookly.with(
+#show: bookily.with(
 	author: "Author Name",
 	fonts: (
 		body: "Lato",
@@ -333,7 +353,7 @@ For unnumbered chapters, you can simply use the #cmd("chapter-nonum") function. 
 	```
 ]
 
-`bookly` also provides the #dtype("label") `<nonum-sec>` to create unnumbered sections. To use it, simply add the label `<nonum-sec>` after the title of the considered section.
+`bookily` also provides the #dtype("label") `<nonum-sec>` to create unnumbered sections. To use it, simply add the label `<nonum-sec>` after the title of the considered section.
 #codesnippet[
 ```typ
 == Section title <nonum-sec>
@@ -405,7 +425,7 @@ To create an equation without numbering, use the #cmd("nonumeq") function.
 	```
 ]
 
-`bookly` also provides the #dtype("label") `<nonum-eq>` to create unnumbered equations. To use it, simply add the label `<nonum-eq>` after the equation.
+`bookily` also provides the #dtype("label") `<nonum-eq>` to create unnumbered equations. To use it, simply add the label `<nonum-eq>` after the equation.
 #codesnippet[
 ```typ
 $
@@ -652,7 +672,7 @@ When the `tufte` layout is selected, several customizations are applied to adapt
 )[
 	#argument("..note-args",  types: "arguments")[Arguments of the #cmd("note") function provided by the `marginalia` package.
 
-	#info-alert[`bookly` introduces some customization of the `marginalia` #cmd("note") as follows:
+	#info-alert[`bookily` introduces some customization of the `marginalia` #cmd("note") as follows:
 
 	#codesnippet[
 			```typ
@@ -673,7 +693,7 @@ When the `tufte` layout is selected, several customizations are applied to adapt
 ))[
 	#argument("..notefigure-args", types: "arguments")[Arguments of the #cmd("notefigure") function provided by the `marginalia` package.
 
-	#info-alert[`bookly` introduces a slight customization of the `marginalia` #cmd("notefigure") as follows:
+	#info-alert[`bookily` introduces a slight customization of the `marginalia` #cmd("notefigure") as follows:
 		#codesnippet[
 				```typ
 				#let notefigure = notefigure.with(keep-order: true)
@@ -738,7 +758,7 @@ To implement a custom theme, you have to define a function that includes the `sh
 #codesnippet[
 ```typ
 // my-theme.typ
-#import "@preview/bookly:3.1.1": *
+#import "@preview/bookily:0.1.0": *
 
 #let my-theme(colors: default-colors, it) = {
 	// Update the theme state
@@ -770,14 +790,14 @@ To implement a custom theme, you have to define a function that includes the `sh
 
 You can also define your own functions such as #cmd("part"), #cmd("minitoc") and other elements of the document.
 
-#info-alert[Examples of theming are available in the #link("https://github.com/maucejo/bookly")[Github repository] of the template.]
+#info-alert[Examples of theming are available in the #link("https://github.com/cesasol/bookily")[Github repository] of the template.]
 
 Then, you can initialize the template with your custom theme as follows:
 #codesnippet[
 	```typ
 	#import "path_to_file/my-theme.typ": *
 
-	#show: bookly.with(
+	#show: bookily.with(
 		theme: my-theme,
 		...
 	)
@@ -795,7 +815,7 @@ Then, you can initialize the template with your custom theme as follows:
 
 == Template states
 
-`bookly` provides some states that can be useful when designing a custom theme. The states are used to store information about the current state of the document. They are collected in a #dtype(dictionary). The following states are available:
+`bookily` provides some states that can be useful when designing a custom theme. The states are used to store information about the current state of the document. They are collected in a #dtype(dictionary). The following states are available:
 
 #v(1em)
 - `states.alt-margins` -- #dtype(bool): Indicates whether the margins are alternated for odd and even pages when `tufte` layout is enabled.
@@ -874,12 +894,12 @@ For example, to add support for Dutch, you can do the following `#states.localiz
 - `states.tufte` -- #dtype(bool): Indicates whether the current layout is Tufte style.
 
 #info-alert[
-	`bookly` also comes with a function #cmd("reset-counters") to reset the counters for equations, figures, tables, sidenotes, and footnotes.
+	`bookily` also comes with a function #cmd("reset-counters") to reset the counters for equations, figures, tables, sidenotes, and footnotes.
 ]
 
 = Dependencies
 
-The `bookly` template relies on several #Typst packages to provide additional functionalities:
+The `bookily` template relies on several #Typst packages to provide additional functionalities:
 #v(0.5em)
 - `marginalia:0.3.1`: for tufte layout.
 - `hydra:0.6.2` : for bibliography management.
@@ -959,7 +979,7 @@ This release adds the new theme `pretty` as well as new supported languages (`"d
 #v(1em)
 #text(size: 1.5em)[*v1.0.0 -- October 2025*]
 
-This new release marks the point at which `bookly` is considered feature-complete, hence the version number.
+This new release marks the point at which `bookily` is considered feature-complete, hence the version number.
 
 This release introduces a number of new features, the most important of which are:
 #v(0.5em)
@@ -971,4 +991,4 @@ This release introduces a number of new features, the most important of which ar
 #v(1em)
 #text(size: 1.5em)[*v0.1.0 -- September 2025*]
 
-Initial release of the `bookly` template.
+Initial release of the `bookily` template.

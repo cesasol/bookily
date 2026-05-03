@@ -1,6 +1,6 @@
-#import "src/bookly.typ": *
+#import "src/bookily.typ": *
 
-#show: bookly.with(
+#show: bookily.with(
   title: "TOC smoke",
   author: "Copilot",
   theme: obook,

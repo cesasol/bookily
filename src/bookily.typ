@@ -1,16 +1,20 @@
 // Exported packages
 #import "@preview/equate:0.3.2": *
 // Internals
-#import "bookly-environments.typ": *
-#import "bookly-outlines.typ": *
-#import "bookly-components.typ": *
-#import "bookly-helper.typ": *
-#import "bookly-themes.typ": *
-#import "bookly-tufte.typ": *
+#import "bookily-environments.typ": *
+#import "bookily-outlines.typ": *
+#import "bookily-components.typ": *
+#import "bookily-helper.typ": *
+#import "bookily-themes.typ": *
+#import "bookily-tufte.typ": *
 
 // Template
-#let bookly(
+#let bookily(
   title: "Title",
+  subtitle: none,
+  subsubtitle: none,
+  subsubsubtitle: none,
+  epigraph: none,
   author: "Author Name",
   theme: fancy,
   tufte: false,
@@ -26,6 +30,10 @@
   set document(author: author, title: title)
   states.author.update(author)
   states.title.update(title)
+  states.subtitle.update(subtitle)
+  states.subsubtitle.update(subsubtitle)
+  states.subsubsubtitle.update(subsubsubtitle)
+  states.epigraph.update(epigraph)
   states.tufte.update(tufte)
 
   // Book colors
@@ -53,12 +61,12 @@
   set par(justify: true)
 
   // Localization
-  let bookly-lang = if default-language.contains(lang) {
+  let bookily-lang = if default-language.contains(lang) {
     lang
   } else {
     "en"
   }
-  states.localization.update(json("resources/i18n/" + bookly-lang + ".json"))
+  states.localization.update(json("resources/i18n/" + bookily-lang + ".json"))
 
 
   // References

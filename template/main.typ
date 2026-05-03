@@ -1,5 +1,4 @@
-#import "@preview/bookly:3.1.1": *
-// #import "../src/bookly.typ": *
+#import "../src/bookily.typ": *
 // #import "custom-theme.typ": *
 
 #let config-colors = (
@@ -7,7 +6,19 @@
   secondary: rgb("#dddddd").darken(15%)
 )
 
-#show: bookly.with(
+#show: bookily.with(
+  title: [A long and beautiful title],
+  subtitle: [Introduction to writing great subtitles],
+  subsubtitle: [
+    A redundant and sometimes necessary subtitle
+  ],
+  subsubsubtitle: [
+    There are times that two subtitles don't make the cut so we add a third one \
+    —subsubtitle—
+  ],
+  epigraph: quote(
+    attribution: [Jonathan Bingus],
+  )[This is a tremendously inspirational quote that sets the tone of this course; truly, one of the epigraphs of all time.],
   author: "Author Name",
   fonts: (
     body: "Lato",

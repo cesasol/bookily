@@ -7,6 +7,7 @@
   author: state("author", none),
   colors: state("theme-colors"),
   counter-part: counter("part"),
+  epigraph: state("epigraph", none),
   in-outline: state("in-outline", false),
   isappendix: state("isappendix", false),
   isfrontmatter: state("isfrontmatter", false),
@@ -20,6 +21,9 @@
   page-numbering: state("page-numbering", "1/1"),
   part-numbering: state("part-numbering", "1"),
   sidenotecounter: counter("sidenotecounter"),
+  subsubsubtitle: state("subsubsubtitle", none),
+  subsubtitle: state("subsubtitle", none),
+  subtitle: state("subtitle", none),
   theme: state("theme", "fancy"),
   title: state("title", none),
   tufte: state("tufte", false),
@@ -52,12 +56,62 @@
     paper: paper-size,
     header: none,
     footer: none,
-    margin: auto
+    margin: auto,
   )
 
-  align(center + horizon)[
-    #text(size: 3em, fill: states.colors.get().primary)[*#states.title.get()*]
-    #v(1em)
-    #text(size: 1.5em)[#states.author.get()]
-  ]
+  let title = states.title.get()
+  let subtitle = states.subtitle.get()
+  let subsubtitle = states.subsubtitle.get()
+  let subsubsubtitle = states.subsubsubtitle.get()
+  let epigraph = states.epigraph.get()
+  let author = states.author.get()
+  let primary = states.colors.get().primary
+
+  set align(center)
+  v(1fr)
+
+  // Title
+  text(size: 2.75em, fill: primary, weight: "bold")[#smallcaps(title)]
+
+  // Subtitle
+  if subtitle != none {
+    v(0.6em)
+    text(size: 1.5em)[#smallcaps(subtitle)]
+  }
+
+  // Sub-subtitle (italic)
+  if subsubtitle != none {
+    v(0.8em)
+    text(size: 1.15em, style: "italic")[#subsubtitle]
+  }
+
+  // Sub-sub-subtitle (smaller italic, may contain forced linebreaks)
+  if subsubsubtitle != none {
+    v(0.3em)
+    text(size: 0.95em, style: "italic")[#subsubsubtitle]
+  }
+
+  v(2fr)
+
+  // Epigraph: rule above, content (block-quoted so attributions render), rule below
+  if epigraph != none {
+    block(width: 70%)[
+      #set align(left)
+      #set quote(block: true)
+      #line(length: 100%, stroke: 0.5pt)
+      #v(0.4em)
+      #text(size: 1em, style: "italic")[#epigraph]
+      #v(0.4em)
+      #line(length: 100%, stroke: 0.5pt)
+    ]
+  }
+
+  v(2fr)
+
+  // Author
+  if author != none {
+    text(size: 1.25em)[#smallcaps(author)]
+  }
+
+  v(1fr)
 }

@@ -1,4 +1,4 @@
-#import "@preview/bookly:3.1.1": *
+#import "../../src/bookily.typ": *
 
 // #show: chapter.with(
 //   title: "Algorithms",
