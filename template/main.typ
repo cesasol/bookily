@@ -21,15 +21,15 @@
   )[This is a tremendously inspirational quote that sets the tone of this course; truly, one of the epigraphs of all time.],
   author: "Author Name",
   fonts: (
-    body: "Lato",
-    math: "Lete Sans Math"
+    body: "IBM Plex Serif",
+    math: "DejaVu Math TeX Gyre"
   ),
   // theme: custom,
   // theme: classic,
   // theme: fancy,
   // theme: modern,
-  theme: obook,
-  // theme: orly,
+  // theme: obook,
+  theme: orly,
   // theme: pretty,
   // tufte: true,
   lang: "en",

@@ -21,6 +21,10 @@
     place(top)[
       #rect(fill: white, width: 1%, height: 1%)
     ]
+
+    // Display-type hyphenation policy (config-options.hyphenate-titles).
+    set text(hyphenate: states.hyphenate-titles.get())
+
     set align(right)
     set underline(stroke: 2pt + colors.secondary, offset: 8pt)
 
@@ -191,6 +195,9 @@
     footer: none,
     numbering: none
   )
+
+  // Display-type hyphenation policy (config-options.hyphenate-titles).
+  set text(hyphenate: states.hyphenate-titles.get())
 
   set align(center + horizon)
 

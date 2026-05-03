@@ -3,7 +3,7 @@
 
 // #show: chapter.with(title: "First chapter", abstract: lorem(100), label: <ch:1>)
 
-= First chapter
+= First chapter with a distinguique long word
 
 #lorem(100)
 #minitoc

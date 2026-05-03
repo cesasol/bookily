@@ -17,6 +17,9 @@
     // Reset counters
     reset-counters
 
+    // Display-type hyphenation policy (config-options.hyphenate-titles).
+    set text(hyphenate: states.hyphenate-titles.get())
+
     // Heading style
     show: show-if(states.tufte.get(), it => {
       show: wideblock.with(side: "both")
@@ -269,6 +272,9 @@
     footer: none,
     numbering: none
   )
+
+  // Display-type hyphenation policy (config-options.hyphenate-titles).
+  set text(hyphenate: states.hyphenate-titles.get())
 
   set align(center + horizon)
 

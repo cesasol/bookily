@@ -34,6 +34,9 @@
       // Reset counters
       reset-counters
 
+      // Display-type hyphenation policy (config-options.hyphenate-titles).
+      set text(hyphenate: states.hyphenate-titles.get())
+
       // Heading style
       let chap-id = if it.numbering != none {counter(heading).display(states.num-heading.get()) + ". "} else {none}
       let content = grid(
@@ -232,6 +235,9 @@
     footer: none,
     numbering: none
   )
+
+  // Display-type hyphenation policy (config-options.hyphenate-titles).
+  set text(hyphenate: states.hyphenate-titles.get())
 
   if states.open-right.get() {
     pagebreak(weak: true, to:"odd")

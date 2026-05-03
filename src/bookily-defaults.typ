@@ -8,6 +8,7 @@
   colors: state("theme-colors"),
   counter-part: counter("part"),
   epigraph: state("epigraph", none),
+  hyphenate-titles: state("hyphenate-titles", false),
   in-outline: state("in-outline", false),
   isappendix: state("isappendix", false),
   isfrontmatter: state("isfrontmatter", false),
@@ -34,7 +35,8 @@
 #let default-config-options = (
   part-numbering: "1",
   open-right: true,
-  alt-margins: false
+  alt-margins: false,
+  hyphenate-titles: false,
 )
 
 #let default-fonts = (
@@ -67,6 +69,10 @@
   let author = states.author.get()
   let primary = states.colors.get().primary
 
+  // Display-type hyphenation policy (config-options.hyphenate-titles).
+  // The epigraph is body-style prose, so we restore the document default for it.
+  set text(hyphenate: states.hyphenate-titles.get())
+
   set align(center)
   v(1fr)
 
@@ -93,11 +99,13 @@
 
   v(2fr)
 
-  // Epigraph: rule above, content (block-quoted so attributions render), rule below
+  // Epigraph: rule above, content (block-quoted so attributions render), rule below.
+  // Epigraph is body-style prose so it should follow normal hyphenation.
   if epigraph != none {
     block(width: 70%)[
       #set align(left)
       #set quote(block: true)
+      #set text(hyphenate: auto)
       #line(length: 100%, stroke: 0.5pt)
       #v(0.4em)
       #text(size: 1em, style: "italic")[#epigraph]

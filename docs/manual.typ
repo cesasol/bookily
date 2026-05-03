@@ -133,6 +133,7 @@ After importing #package[bookily], you have to initialize the template by a show
 			- `part-numbering` #dtype(str) -- Numbering pattern (default: "1")
 			- `open-right` #dtype(bool) -- If `true`, parts start on a right-hand page (default: `true`)
 			- `alt-margins` #dtype(bool) -- If `true`, margins are alternated for odd and even pages when `tufte` is enabled (default: `false`)
+			- `hyphenate-titles` #dtype(bool) -- If `true`, hyphenation is allowed inside the cover title hierarchy (`title`, `subtitle`, `subsubtitle`, `subsubsubtitle`), chapter (level-1) headings, and part titles. If `false`, those display elements wrap whole words instead. Trade-publishing convention is to never hyphenate display type, so the default is `false`. The epigraph and body text are unaffected (they follow the document language's normal hyphenation).
 		]
 ]
 
@@ -826,6 +827,10 @@ Then, you can initialize the template with your custom theme as follows:
 
 - `states.counter-part` -- #dtype(str): Counter for parts.
 
+- `states.epigraph` -- #dtype(content): Optional epigraph rendered on the cover, between two horizontal rules.
+
+- `states.hyphenate-titles` -- #dtype(bool): Indicates whether the cover title hierarchy, chapter (level-1) headings, and part titles are allowed to hyphenate.
+
 - `states.in-outline` -- #dtype(bool): Indicates whether the current section is in the outline.
 
 - `states.isappendix` -- #dtype(bool): Indicates whether the current section is an appendix.
@@ -886,6 +891,12 @@ For example, to add support for Dutch, you can do the following `#states.localiz
 - `states.part-numbering` -- #dtype(str): Numbering pattern for parts.
 
 - `states.sidenotecounter` -- #dtype(int): Counter for sidenotes.
+
+- `states.subsubsubtitle` -- #dtype(content): Optional third-level subtitle rendered on the cover.
+
+- `states.subsubtitle` -- #dtype(content): Optional second-level subtitle rendered on the cover.
+
+- `states.subtitle` -- #dtype(content): Optional subtitle rendered on the cover.
 
 - `states.theme` -- #dtype(str): Current theme of the document.
 

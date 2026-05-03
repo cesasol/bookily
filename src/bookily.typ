@@ -45,6 +45,7 @@
   states.alt-margins.update(book-options.alt-margins)
   states.open-right.update(book-options.open-right)
   states.part-numbering.update(book-options.part-numbering)
+  states.hyphenate-titles.update(book-options.hyphenate-titles)
 
   // Fonts
   set text(font: fonts.body, lang: lang, size: text-size, ligatures: false)
@@ -163,4 +164,3 @@
 
   body
 }
-

@@ -15,6 +15,9 @@
     // Reset counters
     reset-counters
 
+    // Display-type hyphenation policy (config-options.hyphenate-titles).
+    set text(hyphenate: states.hyphenate-titles.get())
+
     // Heading style
     let type-chapter = if states.isappendix.get() {states.localization.get().appendix} else {states.localization.get().chapter}
 
@@ -32,13 +35,13 @@
         #v(-0.75em)
         #line(length: 100%, stroke: 0.5pt)
         #v(-0.1em)
-        #text(2em, hyphenate: false)[#it.body]
+        #text(2em)[#it.body]
       ]
     } else {
       [
         #line(length: 100%, stroke: 0.5pt)
         #v(-0.1em)
-        #text(2em, hyphenate: false)[#it.body]
+        #text(2em)[#it.body]
       ]
     }
     v(5em)
@@ -144,6 +147,9 @@
     footer: none,
     numbering: none
   )
+
+  // Display-type hyphenation policy (config-options.hyphenate-titles).
+  set text(hyphenate: states.hyphenate-titles.get())
 
   set align(top + right)
 

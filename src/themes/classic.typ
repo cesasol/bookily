@@ -22,6 +22,9 @@
       #rect(fill: white, width: 1%, height: 1%)
     ]
 
+    // Display-type hyphenation policy (config-options.hyphenate-titles).
+    set text(hyphenate: states.hyphenate-titles.get())
+
     let side = auto
     if states.tufte.get() {
       side = "both"
@@ -182,6 +185,9 @@
     footer: none,
     numbering: none
   )
+
+  // Display-type hyphenation policy (config-options.hyphenate-titles).
+  set text(hyphenate: states.hyphenate-titles.get())
 
   set align(center + horizon)
 

@@ -108,6 +108,9 @@ set align(center)
     let title = states.title.get()
     let author = states.author.get()
 
+    // Display-type hyphenation policy (config-options.hyphenate-titles).
+    set text(hyphenate: states.hyphenate-titles.get())
+
     align(horizon)[
       #move(dx: 2em)[
         #line(stroke: 1.5pt + primary, length: 90%)
@@ -199,11 +202,13 @@ set align(center)
 
     // Epigraph block, framed by horizontal rules.
     // `set quote(block: true)` ensures `#quote(attribution: ...)` renders the
-    // attribution line, which Typst hides in inline mode.
+    // attribution line, which Typst hides in inline mode. Epigraph is
+    // body-style prose, so we restore normal hyphenation here.
     if resolved-epigraph != none {
       block(width: 70%)[
         #set align(left)
         #set quote(block: true)
+        #set text(hyphenate: auto)
         #line(length: 100%, stroke: 0.5pt)
         #v(0.5em)
         #text(size: 1em, style: "italic")[#resolved-epigraph]
