@@ -7,7 +7,10 @@
 )
 
 #show: bookily.with(
-  author: "Author Name",
+  author: (name: "Author Name"),
+  publisher: (commercial-name: "The Publisher"),
+  editions: ((year: 2026, month: 5, name: "First edition"),),
+  isbn: "978-0-00-000000-0",
   fonts: (
     body: "Lato",
     math: "Lete Sans Math"
@@ -20,12 +23,7 @@
   tufte: true,
   // lang: "fr",
   // colors: config-colors,
-  title-page: book-title-page(
-    series: "Typst book series",
-    institution: "Typst community",
-    logo: image("images/typst-logo.svg"),
-    cover: image("images/book-cover.jpg", width: 45%)
-  ),
+  title-page: [],
   config-options: (
     open-right: false,
     alt-margins: true
@@ -33,6 +31,13 @@
 )
 
 #show: front-matter
+
+#[
+  #set page(header: none, footer: none)
+
+  #cover(style: "simple")
+  #copyright-page()
+]
 
 #include "front_matter_tufte/front_main_tufte.typ"
 
