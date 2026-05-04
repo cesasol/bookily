@@ -51,6 +51,7 @@
   notice: auto,
 ) = context {
   let render-content = {
+    set text(hyphenate: states.hyphenate-titles.get())
     set text(size: states.config-options.get().font-size-small)
 
     let loc = states.localization.get()
