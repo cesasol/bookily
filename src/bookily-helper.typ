@@ -66,7 +66,9 @@ set align(center)
 // approach (precedent: fancy.typ line 131).
 #let flatten-title(it) = [#show linebreak: none; #it]
 
-// Book title page
+// Book title page (legacy slot — see #cover() for the recommended 0.2.0 path).
+// Accepts both old arg names (institution, series) and new preferred names
+// (publishing-house, collection). New names win when both are supplied.
 //
 // Most "title" content (title, subtitle, subsubtitle, subsubsubtitle, epigraph,
 // author) flows in from the top-level `bookily()` call via states. The
@@ -78,12 +80,16 @@ set align(center)
   subsubsubtitle: none,
   epigraph: none,
   edition: "First edition",
-  institution: "Institution",
-  series: "Discipline",
+  institution: "Institution",      // legacy alias — prefer publishing-house
+  publishing-house: auto,          // preferred 0.2.0 name; auto = use institution
+  series: "Discipline",             // legacy alias — prefer collection
+  collection: auto,                // preferred 0.2.0 name; auto = use series
   year: datetime.today().year(),
   cover: none,
   logo: none,
 ) = context {
+  let resolved-publishing-house = if publishing-house == auto { institution } else { publishing-house }
+  let resolved-collection = if collection == auto { series } else { collection }
   let primary = states.colors.get().primary
 
   // Resolve content: argument wins, otherwise fall back to the state set by `bookily()`.
@@ -95,14 +101,14 @@ set align(center)
   let header = {
     box(fill: primary, width: 100%, inset: 1em)[
       #set align(center + horizon)
-      #text(fill: white, size: 1.5em)[#strong(delta: 400)[#series]]
+      #text(fill: white, size: 1.5em)[#strong(delta: 400)[#resolved-collection]]
     ]
   }
 
   let footer = {
     box(fill: primary, width: 100%, inset: 1em)[
       #set align(center + horizon)
-      #text(fill: white, size: 1.5em)[#strong(delta: 400)[#institution]]
+      #text(fill: white, size: 1.5em)[#strong(delta: 400)[#resolved-publishing-house]]
     ]
   }
 
