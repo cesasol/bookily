@@ -7,6 +7,7 @@
 #import "bookily-helper.typ": *
 #import "bookily-themes.typ": *
 #import "bookily-tufte.typ": *
+#import "bookily-data.typ": normalize-author, normalize-publisher, normalize-editions, _display-author
 
 // Template
 #let bookily(
@@ -16,6 +17,15 @@
   subsubsubtitle: none,
   epigraph: none,
   author: "Author Name",
+  translators: none,
+  editors: none,
+  illustrators: none,
+  cover-artist: none,
+  publisher: none,
+  editions: none,
+  isbn: none,
+  copyright-notice: none,
+  cover-defaults: none,
   theme: fancy,
   tufte: false,
   logo: none,
@@ -27,14 +37,24 @@
   body
 ) = context {
   // Document's properties
-  set document(author: author, title: title)
-  states.author.update(author)
+  set document(author: _display-author(normalize-author(author)), title: title)
+  states.author.update(normalize-author(author))
   states.title.update(title)
   states.subtitle.update(subtitle)
   states.subsubtitle.update(subsubtitle)
   states.subsubsubtitle.update(subsubsubtitle)
   states.epigraph.update(epigraph)
   states.tufte.update(tufte)
+  // Publishing data states
+  states.translators.update(normalize-author(translators))
+  states.editors.update(normalize-author(editors))
+  states.illustrators.update(normalize-author(illustrators))
+  states.cover-artist.update(normalize-author(cover-artist))
+  states.publisher.update(normalize-publisher(publisher))
+  states.editions.update(normalize-editions(editions))
+  states.isbn.update(isbn)
+  states.copyright-notice.update(copyright-notice)
+  states.cover-defaults.update(cover-defaults)
 
   // Book colors
   let book-colors = default-colors + colors
@@ -42,13 +62,14 @@
 
   // Configuration options
   let book-options = default-config-options + config-options
+  states.config-options.update(book-options)
   states.alt-margins.update(book-options.alt-margins)
   states.open-right.update(book-options.open-right)
   states.part-numbering.update(book-options.part-numbering)
   states.hyphenate-titles.update(book-options.hyphenate-titles)
 
   // Fonts
-  set text(font: fonts.body, lang: lang, size: text-size, ligatures: false)
+  set text(font: fonts.body, lang: lang, size: book-options.text-size, ligatures: false)
 
   // Math font
   show math.equation: set text(font: fonts.math, stylistic-set: 1)

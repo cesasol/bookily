@@ -2,6 +2,7 @@
 #import "@preview/subpar:0.2.2"
 #import "@preview/suboutline:0.3.0": *
 #import "bookily-defaults.typ": *
+#import "bookily-data.typ": _display-author
 
 // Reset counters
 #let reset-counters = context {
@@ -121,7 +122,7 @@ set align(center)
 
   let title-page = context {
     let title = states.title.get()
-    let author = states.author.get()
+    let author = _display-author(states.author.get())
 
     // Display-type hyphenation policy (config-options.hyphenate-titles).
     set text(hyphenate: states.hyphenate-titles.get())
@@ -234,7 +235,7 @@ set align(center)
 
     v(2fr)
 
-    text(size: 1.25em)[#smallcaps(states.author.get())]
+    text(size: 1.25em)[#smallcaps(_display-author(states.author.get()))]
 
     v(1fr)
 
@@ -244,7 +245,7 @@ set align(center)
     }
 
     place(bottom)[
-      #text(size: 0.85em)[#states.localization.get().version-usage \ #sym.copyright #states.author.get(), #year.]
+      #text(size: 0.85em)[#states.localization.get().version-usage \ #sym.copyright #_display-author(states.author.get()), #year.]
     ]
   }
 
@@ -294,7 +295,7 @@ set align(center)
       text([*#states.localization.get().habilitation*], size: 1.5em)
     }
     v(0.25em)
-    text([_ #states.localization.get().authored _ *#states.author.get()*], size: 1.15em)
+    text([_ #states.localization.get().authored _ *#_display-author(states.author.get())*], size: 1.15em)
     v(0.25em)
     text([_ #states.localization.get().defended _ *#defense-date*], size: 1.15em)
     v(0.25em)
@@ -411,7 +412,7 @@ set align(center)
   context{
     v(2em)
     align(center)[
-      #text([*#states.author.get()*], size: 1.5em, fill: states.colors.get().primary)
+      #text([*#_display-author(states.author.get())*], size: 1.5em, fill: states.colors.get().primary)
 
       #text([*#states.title.get()*], size: 1.25em)
 

@@ -1,4 +1,5 @@
 #let fig-supplement = [Figure]
+#import "bookily-data.typ": _display-author
 #let text-size = 11pt
 #let paper-size = "a4"
 
@@ -6,12 +7,20 @@
   alt-margins: state("alt-margins", false),
   author: state("author", none),
   colors: state("theme-colors"),
+  config-options: state("config-options", none),
+  copyright-notice: state("copyright-notice", none),
   counter-part: counter("part"),
+  cover-artist: state("cover-artist", none),
+  cover-defaults: state("cover-defaults", none),
+  editions: state("editions", none),
+  editors: state("editors", none),
   epigraph: state("epigraph", none),
   hyphenate-titles: state("hyphenate-titles", false),
+  illustrators: state("illustrators", none),
   in-outline: state("in-outline", false),
   isappendix: state("isappendix", false),
   isfrontmatter: state("isfrontmatter", false),
+  isbn: state("isbn", none),
   localization: state("localization"),
   num-heading: state("num-heading", "1"),
   num-pattern: state("num-pattern", "1.1."),
@@ -21,12 +30,14 @@
   open-right: state("open-right", true),
   page-numbering: state("page-numbering", "1/1"),
   part-numbering: state("part-numbering", "1"),
+  publisher: state("publisher", none),
   sidenotecounter: counter("sidenotecounter"),
   subsubsubtitle: state("subsubsubtitle", none),
   subsubtitle: state("subsubtitle", none),
   subtitle: state("subtitle", none),
   theme: state("theme", "fancy"),
   title: state("title", none),
+  translators: state("translators", none),
   tufte: state("tufte", false),
 )
 
@@ -133,9 +144,10 @@
 
   v(2fr)
 
-  // Author
-  if author != none {
-    text(size: 1.25em)[#smallcaps(author)]
+  // Author — coerce normalized value to display string
+  let author-display = _display-author(author)
+  if author-display != "" {
+    text(size: 1.25em)[#smallcaps(author-display)]
   }
 
   v(1fr)
