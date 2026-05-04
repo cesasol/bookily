@@ -57,6 +57,15 @@ set align(center)
 // Long and short captions for figures or tables
 #let ls-caption(long, short) = context if states.in-outline.get() { short } else { long }
 
+// Flatten a heading title for use in running headers/footers: suppress
+// embedded linebreaks (\ and \) so multi-line chapter titles
+// render as a single line in the running head.
+//
+// Used by: orly (T12) and classic (T11) — NOT exported from bookily.typ.
+// Typst's \ scoped inside a content block is the idiomatic
+// approach (precedent: fancy.typ line 131).
+#let flatten-title(it) = [#show linebreak: none; #it]
+
 // Book title page
 //
 // Most "title" content (title, subtitle, subsubtitle, subsubsubtitle, epigraph,
