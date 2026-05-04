@@ -7,6 +7,7 @@
 #import "bookily-helper.typ": *
 #import "bookily-themes.typ": *
 #import "bookily-tufte.typ": *
+#import "bookily-cover.typ": *
 #import "bookily-data.typ": normalize-author, normalize-publisher, normalize-editions, _display-author
 
 // Template
