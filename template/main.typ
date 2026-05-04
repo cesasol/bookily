@@ -19,7 +19,10 @@
   epigraph: quote(
     attribution: [Jonathan Bingus],
   )[This is a tremendously inspirational quote that sets the tone of this course; truly, one of the epigraphs of all time.],
-  author: "Author Name",
+  author: (name: "Author Name"),
+  publisher: (commercial-name: "The Publisher", legal-name: "The Publisher Ltd."),
+  editions: ((year: 2026, month: 5, name: "First edition"),),
+  isbn: "978-0-00-000000-0",
   fonts: (
     body: "IBM Plex Serif",
     math: "DejaVu Math TeX Gyre"
@@ -34,12 +37,9 @@
   // tufte: true,
   lang: "en",
   // colors: config-colors,
-  title-page: book-title-page(
-    series: "Typst book series",
-    institution: "Typst community",
-    logo: image("images/typst-logo.svg"),
-    cover: image("images/book-cover.jpg", width: 45%)
-  ),
+  // Legacy pattern (still supported in v0.2.0):
+  // title-page: book-title-page.with(institution: "Publisher", series: "Series"),
+  title-page: [],
   config-options: (
     open-right: false,
     // alt-margins: true,
@@ -48,6 +48,17 @@
 )
 
 #show: front-matter
+
+#[
+  #set page(header: none, footer: none)
+
+  // New 0.2.0 front-matter
+  #cover(style: "full")
+  #pagebreak(to: "odd")
+  #cover(style: "simple")
+  #pagebreak(to: "odd")
+  #copyright-page()
+]
 
 #include "front_matter/front_main.typ"
 
