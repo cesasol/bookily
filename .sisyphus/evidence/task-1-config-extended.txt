@@ -1,0 +1,12 @@
+=== grep -E '^\s+paper:' src/bookily-defaults.typ ===
+  paper: "a4",
+    paper: paper-size,
+
+=== grep -E '^\s+text-size:' src/bookily-defaults.typ ===
+  text-size: 11pt,
+
+=== grep -E '^\s+font-size-small:' src/bookily-defaults.typ ===
+  font-size-small: 9pt,
+
+=== typst compile result ===
+EXIT_CODE=0

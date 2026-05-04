@@ -32,7 +32,24 @@
 
 #let default-language = ("en", "de", "fr",  "es", "it", "pt", "zh")
 
+// Configuration option defaults for bookily().
+// Keys:
+//   paper            – Typst paper string ("a4", "us-letter", etc.) or
+//                     (width: <length>, height: <length>) dict.
+//                     Default: "a4".
+//   text-size        – Body text size.  Default: 11pt.
+//   font-size-small  – Size used by themes for footers and captions.
+//                     Default: 9pt.
+//   part-numbering   – Numbering pattern for parts.  Default: "1".
+//   open-right       – Force chapters to start on odd (right) pages.
+//                     Default: true.
+//   alt-margins      – Enable alternate margin layout.  Default: false.
+//   hyphenate-titles – Enable hyphenation for display-type headings.
+//                     Default: false.
 #let default-config-options = (
+  paper: "a4",
+  text-size: 11pt,
+  font-size-small: 9pt,
   part-numbering: "1",
   open-right: true,
   alt-margins: false,
