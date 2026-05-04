@@ -7,6 +7,30 @@
 
 It is a fork of the excellent [`bookly`](https://github.com/maucejo/bookly) template by **Mathieu Aucejo**, with a deliberately narrower scope: the upstream project targets academic writing (theses, French habilitations, scientific monographs), while this fork strips away the academic apparatus to focus on the typesetting needs of regular books.
 
+## What's new in v0.2.0
+
+Bookily 0.2.0 is an **additive release** — no breaking changes. Every 0.1.0 book continues to compile unchanged.
+
+**New features:**
+
+- `#cover(style: ...)` — opt-in cover primitive with 5 styles: `simple`, `full`, `image-center`, `image-bg`, `image-only`
+- `#copyright-page()` — opt-in copyright page with publisher block, editions history, ISBN, and copyright notice
+- Polymorphic `author` arg: string (legacy), dict, or array for multi-author books
+- New top-level args: `translators`, `editors`, `illustrators`, `cover-artist`, `publisher`, `editions`, `isbn`, `copyright-notice`, `cover-defaults`
+- New arg aliases on `book-title-page`: `publishing-house` (= `institution`), `collection` (= `series`)
+- `paper`, `text-size`, `font-size-small` in `config-options` — all 6 themes honor them
+- Theme polish: orly + classic flatten line-breaks in running headers; modern swaps chapter number/title visual priority
+
+**Preserved (zero migration required):**
+
+- `book-title-page`, `default-title-page`, `bookily(title-page: ...)` — all continue to work unchanged
+
+**Deprecated (doc-only, still compile):**
+
+- `obook` and `pretty` themes are deprecated — no further updates planned; recommend `classic`, `fancy`, `modern`, or `orly`
+
+See [MIGRATION.md](./MIGRATION.md) for the recommended (but not required) migration path.
+
 ## Why a fork?
 
 The upstream `bookly` is a great template, but it carries a lot of machinery that book authors do not need:
@@ -66,6 +90,25 @@ Then in your `.typ` file:
   ),
   config-options: (open-right: true),
 )
+```
+
+Or use the new opt-in v0.2.0 cover and copyright-page primitives:
+
+```typ
+#import "path/to/bookily/src/bookily.typ": *
+
+// New in v0.2.0: opt-in cover system
+#show: bookily.with(
+  title: [A long and beautiful title],
+  author: (name: "Author Name"),
+  publisher: (commercial-name: "The Publisher"),
+  editions: ((year: 2026, month: 5, name: "First edition"),),
+  isbn: "978-0-00-000000-0",
+  theme: modern,
+)
+
+#cover(style: "full")
+#copyright-page()
 ```
 
 A complete, runnable example lives in [`template/main.typ`](./template/main.typ). For the full reference, see the [manual](./docs/manual.pdf).
