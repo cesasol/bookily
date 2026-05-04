@@ -13,7 +13,7 @@
 
 #show: mantys(
   name: "bookily.typ",
-  version: "0.1.0",
+  version: "0.2.0",
   authors: ("cesasol", "Mathieu Aucejo"),
 
   license: "MIT",
@@ -34,7 +34,7 @@
 
 To use the #package[bookily] template, you need to include the following line at the beginning of your `typ` file:
 #codesnippet[```typ
-#import "@preview/bookily:0.1.0": *
+#import "@preview/bookily:0.2.0": *
 ```
 ]
 
@@ -63,12 +63,21 @@ After importing #package[bookily], you have to initialize the template by a show
 	subsubsubtitle: none,
 	epigraph: none,
 	author: "Author Name",
+	translators: none,
+	editors: none,
+	illustrators: none,
+	cover-artist: none,
+	publisher: none,
+	editions: none,
+	isbn: none,
+	copyright-notice: none,
+	cover-defaults: none,
 	theme: "fancy",
 	tufte: false,
 	lang: "fr",
 	fonts: "default-fonts",
 	colors: "default-colors",
-	title-page: none,
+	title-page: "default-title-page",
 	config-options: "default-config-options",
 	[body]))[
 		#argument("title", default: "Title", types: ("string", "content"))[Title of the book. Rendered prominently on the cover.]
@@ -88,15 +97,33 @@ After importing #package[bookily], you have to initialize the template by a show
 		```
 		]
 
-		#argument("author", default: "Author Name", types: "string")[Author of the book.]
+		#argument("author", default: "Author Name", types: ("string", "dict", "array"))[Author of the book. A string is treated as a display name; a dictionary or array follows the author data model described in @ss:publishing-data-models.]
+
+		#argument("translators", default: none, types: ("string", "dict", "array"))[Translator credit(s). Uses the same author-shaped data model as `author`.]
+
+		#argument("editors", default: none, types: ("string", "dict", "array"))[Editor credit(s). Uses the same author-shaped data model as `author`.]
+
+		#argument("illustrators", default: none, types: ("string", "dict", "array"))[Illustrator credit(s). Uses the same author-shaped data model as `author`.]
+
+		#argument("cover-artist", default: none, types: ("string", "dict", "array"))[Cover artist credit(s). Uses the same author-shaped data model as `author`.]
+
+		#argument("publisher", default: none, types: ("string", "dict"))[Publisher imprint or publishing house. A string maps to `(commercial-name: "...")`; dictionaries follow the publisher data model described in @ss:publishing-data-models.]
+
+		#argument("editions", default: none, types: "array")[Array of edition dictionaries used by `copyright-page()`. Edition entries are validated and sorted by date; see @ss:publishing-data-models.]
+
+		#argument("isbn", default: none, types: "string")[ISBN printed by `copyright-page()` when present.]
+
+		#argument("copyright-notice", default: none, types: "content")[Content override for the copyright notice used by `copyright-page()`.]
+
+		#argument("cover-defaults", default: none, types: "dict")[Defaults consumed by `#cover()` before it falls back to the template states. Supported keys are `title`, `subtitle`, `subsubtitle`, `subsubsubtitle`, and `epigraph`. Explicit `cover()` arguments still win.]
 
 		#argument("theme", default: "fancy", types: "function")[Theme of the document. Possible values are:
 			- `fancy` (default)
 			- `modern`
 			- `classic`
-			- `obook`
+			- `obook` (deprecated legacy theme in v0.2.0)
 			- `orly` (O'Reilly inspired)
-			- `pretty`
+			- `pretty` (deprecated legacy theme in v0.2.0)
 		]
 
 		#argument("tufte", default: false, types: "bool")[If `true`, the layout of the document is inspired by the works of Edward Tufte (wide margins, sidenotes, etc.). Useful for commentary editions of historical works and other annotation-heavy publications.
@@ -127,7 +154,7 @@ After importing #package[bookily], you have to initialize the template by a show
 			- `header` #dtype(color) -- Color used for adapting the color of the document headers (default: `black`)
 		]
 
-		#argument("title-page", default: none, types: "content")[Content of the title page.]
+		#argument("title-page", default: "default-title-page", types: ("content", "function", "none"))[Content or function used by the legacy title-page slot — auto-renders `default-title-page` or a user-supplied function. Pass `[]` or `none` only when you plan to build front matter manually with `#cover()` and `#copyright-page()`.]
 
 		#argument("config-options", default: "default-config-options", types: "dict")[Configuration options of the document. It allows a more fine-grained control of some aspects of the template. It contains the following keys:
 			- `part-numbering` #dtype(str) -- Numbering pattern (default: "1")
@@ -154,6 +181,8 @@ After importing #package[bookily], you have to initialize the template by a show
 ]
 
 === Themes gallery <sss:themes>
+
+#warning-alert[In v0.2.0, `obook` and `pretty` are deprecated legacy themes. They remain available for existing documents, but no further updates are planned. For new books, prefer `classic`, `fancy`, `modern`, or `orly`.]
 
 ==== Fancy
 
@@ -449,7 +478,7 @@ The template provides several types of boxes to highlight different kinds of con
 - #cmd("question-box") for questions.
 
 #codesnippet[
-	#show math.equation: set text(font: "Lete Sans Math")
+	#show math.equation: set text(font: "New Computer Modern Math")
 	```typ
 	#info-box[#lorem(10)]
 	#tip-box[#lorem(10)]
@@ -487,31 +516,256 @@ The information boxes described above are built using the #cmd("custom-box") fun
 	#argument("color", default: rgb(29, 144, 208), types: "color")[Box color.]
 ]
 
+== Cover system
+
+`bookily` v0.2.0 adds an opt-in standalone #cmd("cover") function for trade-publishing front matter. It coexists with the legacy `title-page:` slot: initialize document metadata with `bookily(...)`, suppress the automatic title page when needed, then call `#cover(...)` explicitly inside `front-matter`.
+
+#command("cover", ..args(
+	style: "simple",
+	image: none,
+	header: auto,
+	footer: auto,
+	title: auto,
+	subtitle: auto,
+	subsubtitle: auto,
+	subsubsubtitle: auto,
+	epigraph: auto,
+	author: auto,
+	logo: none,
+))[
+	#argument("style", default: "simple", types: "string")[Cover style. Available values are `"simple"`, `"full"`, `"image-center"`, `"image-bg"`, and `"image-only"`.]
+
+	#argument("image", default: none, types: ("string", "image", "content"))[Cover image. Required by `"image-center"`, `"image-bg"`, and `"image-only"`. A string is treated as a path and passed to `image(...)`.]
+
+	#argument("header", default: auto, types: (auto, "content", "none"))[Optional header content for text-based cover styles. `auto` lets the style decide; `none` suppresses it.]
+
+	#argument("footer", default: auto, types: (auto, "content", "none"))[Optional footer content for text-based cover styles. `auto` lets the style decide; `none` suppresses it.]
+
+	#argument("title", default: auto, types: (auto, "string", "content", "none"))[Title override. `auto` reads `cover-defaults.title` first, then `states.title`.]
+
+	#argument("subtitle", default: auto, types: (auto, "string", "content", "none"))[Subtitle override. `auto` reads `cover-defaults.subtitle` first, then `states.subtitle`.]
+
+	#argument("subsubtitle", default: auto, types: (auto, "string", "content", "none"))[Second-level subtitle override. `auto` reads `cover-defaults.subsubtitle` first, then `states.subsubtitle`.]
+
+	#argument("subsubsubtitle", default: auto, types: (auto, "string", "content", "none"))[Third-level subtitle override. `auto` reads `cover-defaults.subsubsubtitle` first, then `states.subsubsubtitle`.]
+
+	#argument("epigraph", default: auto, types: (auto, "content", "none"))[Epigraph override. `auto` reads `cover-defaults.epigraph` first, then `states.epigraph`. Pass a `quote(attribution: ...)` element for attribution rendering.]
+
+	#argument("author", default: auto, types: (auto, "string", "content", "none"))[Author display override. `auto` renders the normalized `author` state.]
+
+	#argument("logo", default: none, types: ("string", "image", "content", "none"))[Logo content or image path.]
+]
+
+The five built-in cover styles are:
+#v(0.5em)
+- `"simple"`: centered text cover with title hierarchy, author, publisher, and optional logo.
+- `"full"`: richer text cover with dividers, the full title hierarchy, epigraph, author, publisher, and optional logo.
+- `"image-center"`: title and metadata with a centered cover image.
+- `"image-bg"`: full-bleed image background with a translucent title block.
+- `"image-only"`: full-bleed image with no generated typography.
+
+#codesnippet[
+```typ
+#show: bookily.with(
+  title: [A long and beautiful title],
+  subtitle: [Introduction to writing great subtitles],
+  author: (name: "Author Name"),
+  publisher: (commercial-name: "The Publisher"),
+  title-page: [],
+)
+
+#show: front-matter
+
+#cover(style: "full")
+```
+]
+
+== Copyright page
+
+The #cmd("copyright-page") function renders a compact, canonical copyright page for front matter. It is opt-in and intended to be called after a cover. In Tufte mode it automatically uses a wide block so the legal metadata spans the full page width.
+
+#command("copyright-page", ..args(
+	misc-credits: none,
+	notice: auto,
+))[
+	#argument("misc-credits", default: none, types: "dict")[Additional role-to-name credits to print after the ISBN, for example `(translator: "A. Translator", cover: "B. Artist")`. Role labels are localized when a matching i18n key exists.]
+
+	#argument("notice", default: auto, types: (auto, "content", "none"))[Copyright notice override for this page. `auto` uses `copyright-notice:` from `bookily(...)` when present, otherwise builds `© <current year> <author>. All rights reserved.`]
+]
+
+`copyright-page()` pulls the following data from template states initialized by `bookily(...)`: `publisher`, `editions`, `isbn`, `author`, `copyright-notice`, `localization`, `config-options.font-size-small`, and `tufte`.
+
+#codesnippet[
+```typ
+#show: bookily.with(
+  author: (name: "Author Name"),
+  publisher: (
+    commercial-name: "The Publisher",
+    legal-name: "The Publisher Ltd.",
+    webpage: "https://publisher.example",
+    location: (city: "Paris", country: "France"),
+  ),
+  editions: ((year: 2026, month: 5, name: "First edition"),),
+  isbn: "978-0-00-000000-0",
+  title-page: [],
+)
+
+#show: front-matter
+#copyright-page(
+  misc-credits: (
+    translator: "A. Translator",
+    "cover-artist": "B. Artist",
+  ),
+)
+```
+]
+
+== Publishing data models <ss:publishing-data-models>
+
+The publishing metadata accepted by `bookily(...)` is intentionally small and validated. Unknown keys cause an error, which helps catch typos before the manual, cover, or copyright page is rendered.
+
+=== Author-shaped values
+
+The `author`, `translators`, `editors`, `illustrators`, and `cover-artist` arguments accept a string, a dictionary, or an array of strings/dictionaries.
+
+Allowed author dictionary keys:
+#v(0.5em)
+- `name` #dtype(str) -- Display name used in the document metadata, covers, title pages, and back-cover helpers.
+- `dob` #dtype(str) -- Date or year of birth.
+- `pob` #dtype(str) -- Place of birth.
+- `dod` #dtype(str) -- Date or year of death.
+- `pod` #dtype(str) -- Place of death.
+- `website` #dtype(str) -- Author website URL.
+- `socials` #dtype(dictionary) -- Social links keyed by platform name.
+- `wikipedia` #dtype(str) -- Wikipedia URL or page identifier.
+- `viaf` #dtype(str) -- VIAF identifier or URL.
+
+#codesnippet[
+```typ
+// String form
+author: "Author Name"
+
+// Dictionary form
+author: (
+  name: "Author Name",
+  dob: "1970",
+  pob: "Lyon, France",
+  website: "https://author.example",
+  socials: (mastodon: "@author@example.social"),
+  wikipedia: "https://en.wikipedia.org/wiki/Author",
+  viaf: "123456789",
+)
+
+// Array form
+author: (
+  (name: "First Author"),
+  (name: "Second Author"),
+)
+```
+]
+
+=== Publisher values
+
+The `publisher` argument accepts a string or a dictionary. A string is normalized to `(commercial-name: "...")`.
+
+Allowed publisher dictionary keys:
+#v(0.5em)
+- `commercial-name` #dtype(str) -- Public imprint name used on covers and copyright pages.
+- `legal-name` #dtype(str) -- Legal entity name, printed on the copyright page when different from `commercial-name`.
+- `logo` #dtype(content) -- Publisher logo rendered by `copyright-page()`.
+- `webpage` #dtype(str) -- Publisher URL rendered as a link on the copyright page.
+- `socials` #dtype(dictionary) -- Social links keyed by platform name. Stored for downstream use.
+- `location` #dtype("str or dictionary") -- Publisher location. As a dictionary, allowed keys are `country`, `city`, and `address`.
+
+#codesnippet[
+```typ
+// String form
+publisher: "The Publisher"
+
+// Dictionary form
+publisher: (
+  commercial-name: "The Publisher",
+  legal-name: "The Publisher Ltd.",
+  logo: image("images/publisher-logo.svg", width: 20%),
+  webpage: "https://publisher.example",
+  socials: (mastodon: "@publisher@example.social"),
+  location: (
+    address: "1 Publisher Street",
+    city: "Paris",
+    country: "France",
+  ),
+)
+```
+]
+
+=== Edition values
+
+The `editions` argument accepts an array of dictionaries. Each dictionary must include `year`; entries are sorted ascending by `(year, month, day)` before rendering.
+
+Allowed edition dictionary keys:
+#v(0.5em)
+- `year` #dtype(int) -- Required edition year.
+- `month` #dtype(int) -- Optional month number.
+- `day` #dtype(int) -- Optional day of month.
+- `publisher` #dtype("str or dictionary") -- Optional edition-specific publisher; falls back to the top-level `publisher` when omitted.
+- `name` #dtype(str) -- Optional edition label such as `"First edition"`, `"Revised edition"`, or `"Paperback edition"`.
+
+#codesnippet[
+```typ
+editions: (
+  (year: 2026, month: 5, name: "First edition"),
+  (
+    year: 2027,
+    month: 2,
+    day: 14,
+    name: "Second printing",
+    publisher: (commercial-name: "The Publisher"),
+  ),
+)
+```
+]
+
 == Title pages
 
-The template provides two functions to create title pages: one for a book and one for a thesis :
+The template still provides two legacy functions to create title pages: one for a book and one for a thesis. They are preserved for existing documents. For new trade-publishing projects, prefer the explicit `#cover()` and `#copyright-page()` front-matter path.
+
+=== book-title-page (legacy — recommended path is `#cover()` for new documents)
 
 #command("book-title-page",
 ..args(
-	subtitle: "Book subtitle",
+	subtitle: none,
+	subsubtitle: none,
+	subsubsubtitle: none,
+	epigraph: none,
   edition: "First edition",
   institution: "Institution",
+  publishing-house: auto,
   series: "Discipline",
-  year: "2024",
+  collection: auto,
+  year: "2026",
   cover: none,
   logo: none,
-	[body]
 )
 )[
-	#argument("subtitle", default: "Book subtitle", types: "string")[Subtitle of the book.]
+	#argument("subtitle", default: none, types: ("string", "content", "none"))[Subtitle override. If omitted, the value from `bookily(subtitle: ...)` is used.]
+
+	#argument("subsubtitle", default: none, types: ("string", "content", "none"))[Second-level subtitle override. If omitted, the value from `bookily(subsubtitle: ...)` is used.]
+
+	#argument("subsubsubtitle", default: none, types: ("string", "content", "none"))[Third-level subtitle override. If omitted, the value from `bookily(subsubsubtitle: ...)` is used.]
+
+	#argument("epigraph", default: none, types: ("content", "none"))[Epigraph override. If omitted, the value from `bookily(epigraph: ...)` is used.]
 
 	#argument("edition", default: "First edition", types: "string")[Edition of the book.]
 
-	#argument("institution", default: "Institution", types: "string")[Name of the institution.]
+	#argument("institution", default: "Institution", types: "string")[Legacy alias for `publishing-house`. Preserved for compatibility.]
 
-	#argument("series", default: "Discipline", types: "string")[Name of the series.]
+	#argument("publishing-house", default: auto, types: (auto, "string", "content"))[Preferred v0.2.0 name for the publishing house or publisher imprint displayed in the footer. When set, it overrides `institution`.]
 
-	#argument("year", default: "2024", types: "string")[Year of publication.]
+	#argument("series", default: "Discipline", types: "string")[Legacy alias for `collection`. Preserved for compatibility.]
+
+	#argument("collection", default: auto, types: (auto, "string", "content"))[Preferred v0.2.0 name for the collection, series, or imprint line displayed in the header. When set, it overrides `series`.]
+
+	#argument("year", default: "2026", types: ("int", "string"))[Year of publication.]
 
 	#argument("cover", default: none, types: "image")[Cover image of the book.]
 
@@ -520,14 +774,18 @@ The template provides two functions to create title pages: one for a book and on
 
 #codesnippet[
 ```typ
-#show: book.with(
+#show: bookily.with(
 	title-page: book-title-page(
+		publishing-house: "The Publisher",
+		collection: "Collection Name",
 		logo: image("path_to_logo/logo.png"),
 		cover: image("path_to_image/book-cover.jpg")
 	)
 )
 ```
 ]
+
+=== thesis-title-page (legacy academic helper)
 
 #command("thesis-title-page",
 ..args(
@@ -597,7 +855,7 @@ The template provides two functions to create title pages: one for a book and on
 	),
 )
 
-#show: book.with(
+#show: bookily.with(
 	title-page: thesis-title-page(
 		supervisor: ("Supervisor A", "Supervisor B"),
 		cosupervisor: ("Co-supervisor A", "Co-supervisor B"),
@@ -607,11 +865,11 @@ The template provides two functions to create title pages: one for a book and on
 ```
 )
 
-#info-alert[For both title pages, the title of the document and its author are automatically generated based on the information given when initializing the template.]
+#info-alert[For both legacy title pages, the title of the document and its author are automatically generated based on the information given when initializing the template.]
 
 == Back cover
 
-A back cover of the document is automatically generated using the #cmd("back-cover") function, which displays information about the thesis (title and author), as well as a summary.
+The legacy #cmd("back-cover") helper is preserved for existing thesis-style and academic documents. It displays information about the document (title and author), as well as summaries in one or more languages.
 
 #command("back-cover", ..args(
 	resume: none,
@@ -821,11 +1079,21 @@ Then, you can initialize the template with your custom theme as follows:
 #v(1em)
 - `states.alt-margins` -- #dtype(bool): Indicates whether the margins are alternated for odd and even pages when `tufte` layout is enabled.
 
-- `states.author` -- #dtype(str): Author of the document.
+- `states.author` -- #dtype("str/dict/array"): Normalized author metadata for the document.
 
 - `states.colors` -- #dtype(dictionary): Color scheme for the document.
 
+- `states.copyright-notice` -- #dtype(content): Optional copyright notice override used by `copyright-page()`.
+
 - `states.counter-part` -- #dtype(str): Counter for parts.
+
+- `states.cover-artist` -- #dtype("str/dict/array"): Normalized cover artist credit metadata.
+
+- `states.cover-defaults` -- #dtype(dictionary): Default title hierarchy values consumed by `#cover()`.
+
+- `states.editions` -- #dtype(array): Normalized and date-sorted edition history.
+
+- `states.editors` -- #dtype("str/dict/array"): Normalized editor credit metadata.
 
 - `states.epigraph` -- #dtype(content): Optional epigraph rendered on the cover, between two horizontal rules.
 
@@ -836,6 +1104,10 @@ Then, you can initialize the template with your custom theme as follows:
 - `states.isappendix` -- #dtype(bool): Indicates whether the current section is an appendix.
 
 - `states.isfrontmatter` -- #dtype(bool): Indicates whether the current section is front matter.
+
+- `states.illustrators` -- #dtype("str/dict/array"): Normalized illustrator credit metadata.
+
+- `states.isbn` -- #dtype(str): ISBN rendered by `copyright-page()` when present.
 
 - `states.localization` -- #dtype(dictionary): Dictionary of terms used in the document (e.g., "chapter", etc.) in the selected language.
 
@@ -890,6 +1162,8 @@ For example, to add support for Dutch, you can do the following `#states.localiz
 
 - `states.part-numbering` -- #dtype(str): Numbering pattern for parts.
 
+- `states.publisher` -- #dtype("str/dict"): Normalized publisher or publishing house metadata.
+
 - `states.sidenotecounter` -- #dtype(int): Counter for sidenotes.
 
 - `states.subsubsubtitle` -- #dtype(content): Optional third-level subtitle rendered on the cover.
@@ -901,6 +1175,8 @@ For example, to add support for Dutch, you can do the following `#states.localiz
 - `states.theme` -- #dtype(str): Current theme of the document.
 
 - `states.title` -- #dtype(str): Title of the document.
+
+- `states.translators` -- #dtype("str/dict/array"): Normalized translator credit metadata.
 
 - `states.tufte` -- #dtype(bool): Indicates whether the current layout is Tufte style.
 
@@ -924,6 +1200,21 @@ The `bookily` template relies on several #Typst packages to provide additional f
 
 This section provides a summary of the changes made in each version of the template.
 
+#text(size: 1.5em)[*v0.2.0 -- May 2026*]
+
+This additive release extends the trade-publishing surface of `bookily`:
+#v(0.5em)
+- Adds the standalone `cover()` system with five cover styles and `cover-defaults` metadata.
+
+- Adds `copyright-page()` for publisher, edition history, ISBN, misc credits, and copyright notices.
+
+- Adds structured author-shaped credits (`translators`, `editors`, `illustrators`, `cover-artist`), `publisher`, and `editions` data models.
+
+- Keeps legacy `book-title-page`, `thesis-title-page`, and `back-cover` helpers while recommending `#cover()` for new trade books.
+
+- Deprecates the legacy `obook` and `pretty` themes; prefer `classic`, `fancy`, `modern`, or `orly` for new documents.
+
+#v(1em)
 #text(size: 1.5em)[*v3.1.1 -- April 2026*]
 
 This minor release fixes minor bugs in `obook` theme and numbering problems.
