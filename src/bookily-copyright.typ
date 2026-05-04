@@ -46,6 +46,9 @@
   parts.join(" · ")
 }
 
+// Render a copyright page with publisher block, editions history, ISBN,
+// misc credits, and copyright notice. Reads data from bookily() states.
+// Tufte-aware: wraps content in wideblock when tufte mode is active.
 #let copyright-page(
   misc-credits: none,
   notice: auto,

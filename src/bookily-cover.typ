@@ -193,6 +193,9 @@
   _render-cover-image(image, width: 100%, height: 100%)
 }
 
+// Public dispatcher: render a cover page in one of 5 styles.
+// Resolves `auto` args from cover-defaults state and document states.
+// Panics on invalid style or missing image for image-* styles.
 #let cover(
   style: "simple",
   image: none,
