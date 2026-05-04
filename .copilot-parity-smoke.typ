@@ -1,3 +1,8 @@
+// NOTE: This smoke test intentionally uses `theme: obook` (deprecated in v0.2.0)
+// to verify front-matter→main-matter page-numbering and TOC pagebreak invariants.
+// Do not migrate to a non-deprecated theme — the test's purpose is layout-invariant
+// validation, not theme advocacy.
+
 #import "src/bookily.typ": *
 
 #show: bookily.with(
